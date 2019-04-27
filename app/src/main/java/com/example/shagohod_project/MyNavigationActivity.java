@@ -99,6 +99,21 @@ public class MyNavigationActivity extends AppCompatActivity
             finish();
 
         }
+        else if (id == R.id.nav_inviteMembers) {
+
+        }
+        else if (id == R.id.nav_joinCircle) {
+
+        }
+        else if (id == R.id.nav_joinedCircle) {
+
+        }
+        else if (id == R.id.nav_shareLoc) {
+
+        }
+        else if (id == R.id.nav_myCircle) {
+
+        }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
