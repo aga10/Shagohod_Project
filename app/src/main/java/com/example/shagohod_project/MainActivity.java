@@ -5,11 +5,34 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 public class MainActivity extends AppCompatActivity {
+
+
+    FirebaseAuth auth;
+    FirebaseUser user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        auth = FirebaseAuth.getInstance();
+        user = auth.getCurrentUser();
+
+        if(auth == null)
+        {
+            setContentView(R.layout.activity_main);
+        }
+        else
+        {
+            Intent intent = new Intent(MainActivity.this,MyNavigationActivity.class);
+            startActivity(intent);
+            finish();
+        }
+
+
         setContentView(R.layout.activity_main);
     }
 

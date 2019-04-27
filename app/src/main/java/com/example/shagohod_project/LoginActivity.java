@@ -2,6 +2,8 @@ package com.example.shagohod_project;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -37,6 +39,9 @@ public class LoginActivity extends AppCompatActivity {
                         if(task.isSuccessful())
                         {
                             Toast.makeText(getApplicationContext(), "User logged in successfully",Toast.LENGTH_LONG).show();
+                            Intent myIntent = new Intent(LoginActivity.this,MyNavigationActivity.class);
+                            startActivity(myIntent);
+                            finish();
                         }
                         else
                         {
