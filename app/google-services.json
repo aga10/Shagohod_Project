@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "774182252795",
+    "firebase_url": "https://shagohod-1b029.firebaseio.com",
+    "project_id": "shagohod-1b029",
+    "storage_bucket": "shagohod-1b029.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:774182252795:android:3d2a23442e915ba2",
+        "android_client_info": {
+          "package_name": "com.example.shagohod_project"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "774182252795-3kdohnjqdkjf6i1uqitsso7enh000ive.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCr5ZjUemNAn3tPaFXua0tQJdFQHK1kVqM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "774182252795-3kdohnjqdkjf6i1uqitsso7enh000ive.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
