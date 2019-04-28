@@ -3,6 +3,12 @@ package com.example.shagohod_project;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -10,6 +16,7 @@ import android.view.View;
 
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -20,27 +27,25 @@ import androidx.appcompat.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-public class MyNavigationActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+public class UserLocationActivity extends AppCompatActivity
+        implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback {
+
 
     FirebaseAuth auth;
+    GoogleMap mMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_my_navigation);
+        setContentView(R.layout.activity_user_location);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        auth = FirebaseAuth.getInstance();
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        auth = FirebaseAuth.getInstance();
+
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -62,10 +67,22 @@ public class MyNavigationActivity extends AppCompatActivity
         }
     }
 
+
+    @Override
+    public void onMapReady(GoogleMap googleMap)
+    {
+        mMap = googleMap;
+
+        // Add a marker in Sydney and move the camera
+        LatLng sydney = new LatLng(-34, 151);
+        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.my_navigation, menu);
+        getMenuInflater().inflate(R.menu.user_location, menu);
         return true;
     }
 
@@ -90,29 +107,25 @@ public class MyNavigationActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
+        if (id == R.id.nav_joinCircle) {
 
-        if (id == R.id.nav_signOut) {
+        } else if (id == R.id.nav_myCircle) {
 
-            auth.signOut();
-            Intent myIntent = new Intent(this,MainActivity.class);
-            startActivity(myIntent);
-            finish();
+        } else if (id == R.id.nav_joinedCircle) {
 
-        }
-        else if (id == R.id.nav_inviteMembers) {
+        } else if (id == R.id.nav_inviteMembers) {
 
-        }
-        else if (id == R.id.nav_joinCircle) {
+        } else if (id == R.id.nav_shareLoc) {
 
-        }
-        else if (id == R.id.nav_joinedCircle) {
-
-        }
-        else if (id == R.id.nav_shareLoc) {
-
-        }
-        else if (id == R.id.nav_myCircle) {
-
+        } else if (id == R.id.nav_signOut) {
+            FirebaseUser user = auth.getCurrentUser();
+            if(user!=null)
+            {
+                auth.signOut();
+                finish();
+                Intent myIntent = new Intent(UserLocationActivity.this,MainActivity.class);
+                startActivity(myIntent);
+            }
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

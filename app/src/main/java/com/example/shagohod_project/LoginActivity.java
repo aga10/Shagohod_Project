@@ -39,7 +39,7 @@ public class LoginActivity extends AppCompatActivity {
                         if(task.isSuccessful())
                         {
                             Toast.makeText(getApplicationContext(), "User logged in successfully",Toast.LENGTH_LONG).show();
-                            Intent myIntent = new Intent(LoginActivity.this,MyNavigationActivity.class);
+                            Intent myIntent = new Intent(LoginActivity.this,UserLocationActivity.class);
                             startActivity(myIntent);
                             finish();
                         }
