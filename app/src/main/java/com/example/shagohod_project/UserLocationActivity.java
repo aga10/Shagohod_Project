@@ -1,8 +1,16 @@
 package com.example.shagohod_project;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -18,6 +26,8 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -26,13 +36,17 @@ import androidx.appcompat.widget.Toolbar;
 
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 public class UserLocationActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback {
+        implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback,
+        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
-
+    GoogleApiClient client;
     FirebaseAuth auth;
     GoogleMap mMap;
+    LocationRequest request;
+    LatLng latLng;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,14 +83,15 @@ public class UserLocationActivity extends AppCompatActivity
 
 
     @Override
-    public void onMapReady(GoogleMap googleMap)
-    {
+    public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
-        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        client = new GoogleApiClient.Builder(this)
+                .addApi(LocationServices.API)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .build();
+        client.connect();
     }
 
     @Override
@@ -119,11 +134,10 @@ public class UserLocationActivity extends AppCompatActivity
 
         } else if (id == R.id.nav_signOut) {
             FirebaseUser user = auth.getCurrentUser();
-            if(user!=null)
-            {
+            if (user != null) {
                 auth.signOut();
                 finish();
-                Intent myIntent = new Intent(UserLocationActivity.this,MainActivity.class);
+                Intent myIntent = new Intent(UserLocationActivity.this, MainActivity.class);
                 startActivity(myIntent);
             }
         }
@@ -132,4 +146,48 @@ public class UserLocationActivity extends AppCompatActivity
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        request = new LocationRequest().create();
+        request.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        request.setInterval(3000);
+
+        if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+
+            return;
+        }
+        LocationServices.FusedLocationApi.requestLocationUpdates(client, request, this);
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+
+        if(location == null)
+        {
+            Toast.makeText(getApplicationContext(),"Could not get Location",Toast.LENGTH_SHORT).show();
+        }
+        else
+        {
+            latLng = new LatLng(location.getLatitude(),location.getLongitude());
+
+            MarkerOptions options = new MarkerOptions();
+            options.position(latLng);
+            options.title("Current Location");
+            mMap.addMarker(options);
+        }
+
+
+    }
 }
+
